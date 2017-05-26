@@ -12,11 +12,19 @@ class env_atari:
     def __init__(self, params):
         self.params = params
         self.ale = ALEInterface()
-        self.ale.setInt('random_seed', np.random.randint(0, 500))
-        self.ale.setFloat('repeat_action_probability', params['repeat_prob'])
+        self.ale.setInt(b'random_seed', 123)
+        # self.ale.setInt('random_seed', np.random.randint(0, 500))
+        self.ale.setFloat(b'repeat_action_probability', params['repeat_prob'])
         self.ale.setInt(b'frame_skip', params['frameskip'])
-        self.ale.setBool('color_averaging', True)
-        self.ale.loadROM('roms/' + params['rom'] + '.bin')
+        self.ale.setBool(b'color_averaging', True)
+        rom_bin = 'roms/' + params['rom'] + '.bin'
+
+        def _as_bytes(s):
+            if hasattr(s, 'encode'):
+                return s.encode('utf8')
+            return s
+
+        self.ale.loadROM(_as_bytes(rom_bin))
         self.actions = self.ale.getMinimalActionSet()
         self.action_space = c_action_space(len(self.actions))
         self.screen_width, self.screen_height = self.ale.getScreenDims()

@@ -5,8 +5,9 @@ Jinyoung Choi
 import numpy as np
 import tensorflow as tf
 import TF_utils_cjy as tu
-from tensorflow.python.ops import rnn
-from tensorflow.contrib.rnn.python.ops import rnn_cell
+# from tensorflow.python.ops import rnn
+from tensorflow.contrib.rnn import core_rnn_cell
+# from tensorflow.contrib.rnn.python.ops import rnn_cell
 
 
 def build(params, net_name, device="/gpu:0"):
@@ -44,10 +45,10 @@ def build(params, net_name, device="/gpu:0"):
                 inputs = fcs[-1]
 
             if params['LSTM']:
-                cells = rnn_cell.BasicLSTMCell(params['dim_LSTM'], forget_bias=1.0, state_is_tuple=True)
+                cells = core_rnn_cell.BasicLSTMCell(params['dim_LSTM'], forget_bias=1.0, state_is_tuple=True)
                 LSTM_h_ph = tf.placeholder('float', [None, params['dim_LSTM']])  # batch,dim
                 LSTM_c_ph = tf.placeholder('float', [None, params['dim_LSTM']])
-                state_tuple = tf.nn.rnn_cell.LSTMStateTuple(LSTM_c_ph, LSTM_h_ph)
+                state_tuple = core_rnn_cell.LSTMStateTuple(LSTM_c_ph, LSTM_h_ph)
                 inputs = tf.reshape(inputs, [tf.shape(unroll)[0], -1, inputs.get_shape().as_list()[-1]])
                 LSTM_output, LSTM_state = tf.nn.dynamic_rnn(cells, inputs, initial_state=state_tuple,
                                                             sequence_length=unroll)

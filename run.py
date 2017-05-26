@@ -7,6 +7,9 @@ import numpy as np
 import cv2
 import tensorflow as tf
 import time
+
+from tensorflow.python.ops.logging_ops import merge_all_summaries
+
 import TF_utils_cjy as tu
 import sys
 import argparse
@@ -76,11 +79,12 @@ gpu_config.gpu_options.allow_growth = True
 
 saver = tf.train.Saver()  # TODO save only the master net
 sess = tf.Session(config=gpu_config)
-sess.run(tf.initialize_all_variables())
+# sess.run(tf.initialize_all_variables())
+sess.run(tf.global_variables_initializer())
 
-summary_op = tf.merge_all_summaries()
+summary_op = merge_all_summaries()
 log = params['log_path'] + params['log_name']
-summary_writer = tf.train.SummaryWriter(log, sess.graph_def)
+summary_writer = tf.summary.FileWriter(log, sess.graph_def)
 
 worker_summary_dict = {'op': summary_op, 'writer': summary_writer}
 
@@ -113,7 +117,7 @@ def do_training():
     global Exp_Queue
     global params
     global gf
-    queue_zip = zip(*Exp_Queue)
+    queue_zip = list(zip(*Exp_Queue))
     states = list(queue_zip[0])
     actions = list(queue_zip[1])
     returns = list(queue_zip[2])
