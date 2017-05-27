@@ -29,6 +29,7 @@ ap.add_argument("-LSTM", "--LSTM", required=False, help="LSTM (True or False)")
 ap.add_argument("-show_eval", "--show_eval", required=False, help="show evaluation screen? (True or False)")
 ap.add_argument("-eval_mode", "--eval_mode", required=False, help="Evaluation only (True or False)")
 ap.add_argument("-ckpt", "--ckpt_file", required=False, help="checkpoint name (without path)")
+# TODO: debug checkpoints loading
 ap.add_argument("-rom", "--rom", required=False, help="game rom name without '.bin' ('toy_way' for toy problem)")
 args = vars(ap.parse_args())
 print(args)
